@@ -48,22 +48,22 @@
 */
 var allCells;
 
-window.onload = startUp();
+window.onload = startUp;
 
 function startUp(){
-   document.getElementById("PuzzleTitle").innerHTML = "Puzzle 1";
+   document.getElementById("puzzleTitle").innerHTML = "Puzzle 1";
 
    document.getElementById("puzzle").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating);
 
    var puzzleButtons = document.getElementsByClassName("puzzles");
    for(var i = 0; i < puzzleButtons.length; i++){
-      puzzleButtons[i].onclick = swapPuzzle;
+      puzzleButtons[i].onclick = switchPuzzle;
    }
    setupPuzzle();
 
    // step 5a and 5b
-   document.addEventListener("click", findErrors())
-   document.addEventListener("click", showSolution())
+   document.addEventListener("click", findErrors)
+   document.addEventListener("click", showSolution)
 }
 
 function switchPuzzle(e){
@@ -89,10 +89,33 @@ function switchPuzzle(e){
 }
 
 function setupPuzzle(){
-   var allCells = document.querySelectorAll("hitoriGrid td");
+   var allCells = document.querySelectorAll("table#hitoriGrid td");
 
    for(var i = 0; i < allCells.length; i++){
+      allCells[i].style.backgroundColor = "rgb(255, 255, 255)";
+      allCells[i].style.color = "rgb(0, 0, 0)";
+      allCells[i].style.borderRadius = "0%";
 
+      
+      allCells[i].addEventListener("mousedown",
+      function(e){
+            if(e.shiftKey){
+               allCells[i].style.backgroundColor = "rgb(255, 255, 255)";
+               allCells[i].style.color += "rgb(0, 0, 0)";
+               allCells[i].style.borderRadius += "0%";
+         
+            }else if(e.altKey){
+               allCells[i].style.backgroundColor = "rgb(0, 0, 0)";
+               allCells[i].style.color += "rgb(255, 255, 255)";
+               allCells[i].style.borderRadius += "0%";
+            }else{
+               allCells[i].style.backgroundColor = "rgb(101, 101, 101)";
+               allCells[i].style.color += "rgb(255, 255, 255)";
+               allCells[i].style.borderRadius += "50%";
+            }
+            e.preventDefault();
+         } 
+      );
    }
 }
 
