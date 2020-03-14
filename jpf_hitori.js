@@ -35,7 +35,7 @@
       
    showSolution()
       Shows the solution to the Hitori puzzle
-    
+
    checkSolution()
       Checks the current user's puzzle to verify whether it contains
       the complete and correct solution.
@@ -47,9 +47,9 @@
 	
 */
 var allCells;
-
 window.onload = startUp;
 
+// displays the first puzzle when the page is loaded
 function startUp(){
    document.getElementById("puzzleTitle").innerHTML = "Puzzle 1";
 
@@ -61,27 +61,27 @@ function startUp(){
    }
    setupPuzzle();
 
-   // step 5a and 5b
-   document.addEventListener("click", findErrors)
-   document.addEventListener("click", showSolution)
+
+   document.getElementById("check").onclick = findErrors;
+   document.getElementById("solve").onclick = showSolution;
 }
 
+// changes the puzzle when the puzzle button is pushed 
 function switchPuzzle(e){
-   
+   //message warns that progress will be lost when puzzles araae switch
    if(confirm("do you want to leave? you will lose all of your progress")){
       var puzzleID = e.target.id;
-      var puzzleTitle = e.target.value;
-      document.getElementById("puzzleTitle").innerHTML = puzzleTitle;
+      document.getElementById("puzzleTitle").innerHTML = e.target.value;
    
       switch(puzzleID){
          case "puzzle1":
-            document.getElementById("puzzle1").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating);
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori1Numbers, hitori1Blocks, hitori1Rating);
             break;
          case "puzzle2":
-            document.getElementById("puzzle2").innerHTML = drawHitori(hitori2Numbers, hitori2Blocks, hitori2Rating);
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori2Numbers, hitori2Blocks, hitori2Rating);
             break;
          case "puzzle3":
-            document.getElementById("puzzle3").innerHTML = drawHitori(hitori3Numbers, hitori3Blocks, hitori3Rating);
+            document.getElementById("puzzle").innerHTML = drawHitori(hitori3Numbers, hitori3Blocks, hitori3Rating);
             break;
       }
       setupPuzzle();
@@ -89,36 +89,64 @@ function switchPuzzle(e){
 }
 
 function setupPuzzle(){
-   var allCells = document.querySelectorAll("table#hitoriGrid td");
+   allCells = document.querySelectorAll("table#hitoriGrid td");
 
    for(var i = 0; i < allCells.length; i++){
       allCells[i].style.backgroundColor = "rgb(255, 255, 255)";
       allCells[i].style.color = "rgb(0, 0, 0)";
       allCells[i].style.borderRadius = "0%";
 
-      
+      // changes the style of the spaces in the puzzle
       allCells[i].addEventListener("mousedown",
       function(e){
             if(e.shiftKey){
-               allCells[i].style.backgroundColor = "rgb(255, 255, 255)";
-               allCells[i].style.color += "rgb(0, 0, 0)";
-               allCells[i].style.borderRadius += "0%";
+               e.target.style.backgroundColor = "rgb(255, 255, 255)";
+               e.target.style.color = "rgb(0, 0, 0)";
+               e.target.style.borderRadius = "0%";
          
             }else if(e.altKey){
-               allCells[i].style.backgroundColor = "rgb(0, 0, 0)";
-               allCells[i].style.color += "rgb(255, 255, 255)";
-               allCells[i].style.borderRadius += "0%";
+               e.target.style.backgroundColor = "rgb(0, 0, 0)";
+               e.target.style.color = "rgb(255, 255, 255)";
+               e.target.style.borderRadius = "0%";
             }else{
-               allCells[i].style.backgroundColor = "rgb(101, 101, 101)";
-               allCells[i].style.color += "rgb(255, 255, 255)";
-               allCells[i].style.borderRadius += "50%";
+               e.target.style.backgroundColor = "rgb(101, 101, 101)";
+               e.target.style.color = "rgb(255, 255, 255)";
+               e.target.style.borderRadius = "50%";
             }
             e.preventDefault();
          } 
       );
+      // changes the cursor styles 
+      allCells[i].addEventListener('mouseover',
+         function(e){
+            if(e.shiftKey){
+               e.target.style.cursor = "url(jpf_eraser.png), alias"
+            }else if(e.altKey){
+               e.target.style.cursor = "url(jpf_block.png), cells"
+            }else{
+               e.target.style.cursor = "url(jpf_circle.png), pointer"
+            }
+         }
+      );
+      checkSolution();
    }
 }
-
+// hightlights inccorect answers in red for 5 seconds
+function findErrors(){
+   for(var i = 0; i < allCells.length; i++){
+      if((allCells[i].className === "blocks" && allCells[i].style.backgroundColor === "rgb(101, 101, 101)") || (allCells[i].className === "circles" && allCells[i].style.backgroundColor === "rgb(0, 0, 0)")){
+         allCells[i].style.color = "red";
+      }
+   }
+   setTimeout(
+      function(){
+         for(var i = 0; i < allCells.length; i++){
+            if((allCells[i].className === "blocks" && allCells[i].style.backgroundColor === "rgb(101, 101, 101)") || (allCells[i].className === "circles" && allCells[i].style.backgroundColor === "rgb(0, 0, 0)")){
+               allCells[i].style.color = "rgb(255, 255, 255)";
+            }
+         }
+      }, 500);
+}
 
 
 
